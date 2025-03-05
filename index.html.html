@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Busca de Raça de Gatos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            transition: background-color 0.5s ease;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        input, button {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Digite o Nome da Raça</h2>
+        <input type="text" id="searchInput" placeholder="Exemplo: persian">
+        <button onclick="searchCat()">Buscar</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function searchCat() {
+            const searchValue = document.getElementById("searchInput").value.toLowerCase().trim();
+            const resultDiv = document.getElementById("result");
+
+            // Lista de raças com nome, origem e imagem
+            const catData = {
+                "abyssinian": { name: "Abyssinian", origin: "Egypt",temperament:"Active, Energetic, Independent, Intelligent, Gentle", image: "abyssinian.jpeg" },
+                "bambino": { name: "Bambino", origin: "United States", temperament: "Affectionate, Lively, Friendly, Intelligent, loyal, Sedate, Quiet", image: "Bambino.jpeg"},
+                "aegean": { name: "Aegean", origin: "Greece",temperament:"Affectionate, Social, Intelligent, Playful, Active", image: "aegean.jpeg" },
+                "american bobtail": { name: "American Bobtail", origin: "United States",temperament:"Intelligent, Interactive, Lively, Playful, Sensitive", image: "AmericanBobtail.jpg" },
+                "american curl": { name: "American Curl", temperament:"Affectionate, Curious, Intelligent, Interactive, Lively, Playful, Social", origin:"States", image:"AmericanCurl.jpg"},
+                "american shorthair":{ name: "American Shorthair", temperament:"Active, Curious, Easy Going, Playful, Calm",origin:" United States", image:"americanshorthair.jpg"},
+                "american wirehair": {name:"American Wirehair", temperament:"Affectionate, Curious, Gentle, Intelligent, Interactive, Lively, Loyal, Playful, Sensible, Social",origin: "United States", image:"americanwirehair.jpg"},
+                "arabian mau": {name:"Arabian Mau",temperament:"Affectionate, Agile, Curious, Independent, Playful, Loyal",origin:"United Arab Emirates",image: "ArabianMau.jpg"},
+                "australian mist": { name:"Australian Mist", temperament:"Lively, Social, Fun-loving, Relaxed, Affectionate", origin: "Australia", image: "AustralianMist.jpg"},
+                "balinese": { name:"Balinese",temperament: "Affectionate, Intelligent, Playful", origin: "United States",image:"Balinese.jpg"},
+                "bengal":{name:"Bengal",temperament:"Alert, Agile, Energetic, Demanding, Intelligent",origin: "United States",image:"Bengal.jpg"},
+                "birman" : { name:"Birman", temperament:"Affectionate, Active, Gentle, Social", origin: "France",image: "Birman.jpg"},
+                "bombay":{ name:"Bombay", temperament:"Affectionate, Dependent, Gentle, Intelligent, Playful", origin: "United States", image: "Bombay.jpg"},
+                "british longhair": { name:"British Longhair",temperament: "Affectionate, Easy Going, Independent, Intelligent, Loyal, Social",origin: "United Kingdom",image: "BritishLonghair.jpg"},
+                "british shorthair":{ name:"British Shorthair",temperament: "Affectionate, Easy Going, Gentle, Loyal, Patient, calm",origin: "United Kingdom",image: "BritishShorthair.jpg"},
+                "burmese":{ name: "Burmese",temperament: "Curious, Intelligent, Gentle, Social, Interactive, Playful, Lively",origin: "Burma",image: "Burmese.jpg"},
+                "burmilla":{name:"Burmilla",temperament: "Easy Going, Friendly, Intelligent, Lively, Playful, Social",origin: "United Kingdom",image: "Burmilla.jpg"},
+                "california spangled":{ name:"California Spangled", temperament: "Affectionate, Curious, Intelligent, Loyal, Social",origin: "United States", image: "CaliforniaSpangled.jpg"},
+                "chantilly tiffany":{ name: "Chantilly-Tiffany",temperament:"Affectionate, Demanding, Interactive, Loyal", origin: "United States",image: "ChantillyTiffany.jpg"},
+                "chartreux":{ name: "Chartreux", temperament:"Affectionate, Loyal, Intelligent, Social, Lively, Playful",origin: "France",image:"Chartreux.jpg"},
+                "chausie":{name:"Chausie",temperament: "Affectionate, Intelligent, Playful, Social", origin: "Egypt",image: "Chausie.jpg"},
+                "cheetoh":{name: "Cheetoh", temperament: "Affectionate, Gentle, Intelligent, Social",origin: "United States", image: "Cheetoh.jpg"},
+                "colorpoint":{ name:"Colorpoint Shorthair", temperament: "Affectionate, Intelligent, Playful, Social",origin: "United States",image: "ColorpointShorthair.jpg"},
+                "cornish":{ name: "Cornish Rex",temperament:"Affectionate, Intelligent, Active, Curious, Playful", origin: "United Kingdom",image: "CornishRex.jpg"},
+                "cymric":{ name:"Cymric", temperament: "Gentle, Loyal, Intelligent, Playful",origin: "Canada",image: "Cymric.jpg"},
+                "cyprus":{ name:"Cyprus", temperament:"Affectionate, Social", origin: "Cyprus",image: "Cyprus.jpg"},
+                "devon rex":{ name: "Devon Rex", temperament:"Highly interactive, Mischievous, Loyal, Social, Playful",origin: "United Kingdom",image: "DevonRex.jpg"},
+                "donskoy":{name:"Donskoy", temperament:"Playful, affectionate, loyal, social", origin:"Russia", image: "Donskoy.jpg"},
+                "dragon li":{name:"Dragon Li", temperament: "Friendly, Gentle, Loving, Loyal", origin:"China",image: "DragonLi.jpg"},
+                "egyptian mau":{name:"Egyptian Mau", temperament: "Dependent, Gentle, Intelligent, Lively, Loyal, Playful",origin: "Egypt",image: "EgyptianMau.jpg"},
+                "european burmese":{ name:"European Burmese", temperament: "Sweet, Affectionate, Loyal",origin:"Burma",image:"EuropeanBurmese.png"},
+                "exotic shorthair":{ name:"Exotic Shorthair", temperament:"Affectionate, Sweet, Loyal, Quiet, Peaceful",origin: "United States",image: "ExoticShorthair.jpg"},
+                "havana brown":{name:"Havana Brown", temperament:"Affectionate, Curious, Demanding, Friendly, Intelligent, Playful", origin: "United Kingdom", image:"HavanaBrown.jpg"},
+                "himalayan":{name:"Himalayan", temperament: "Dependent, Gentle, Intelligent, Quiet, Social", origin: "United States", image: "Himalayan.jpg"},
+                "japanese bobtail":{ name:"Japanese Bobtail", temperament: "Active, Agile, Clever, Easy Going, Intelligent, Lively, Loyal, Playful, Social", origin: "Japan", image: "JapaneseBobtail.jpg"},
+                "javanese":{name:"Javanese",temperament: "Active, Devoted, Intelligent, Playful", origin:"United States", image: "Javanese.jpg"},
+                "khao manee":{name: "Khao Manee", temperament: "Calm, Relaxed, Talkative, Playful, Warm", origin: "Thailand",image: "KhaoManee.jpg"},
+                "korat":{name: "Korat",temperament:"Active, Loyal, highly intelligent, Expressive, Trainable",origin: "Thailand",image: "Korat.jpg"},
+                "kurilian":{name: "Kurilian", temperament: "Independent, highly intelligent, clever, inquisitive, sociable, playful, trainable", origin: "Russia",image: "Kurilian.jpg"},
+                "laPerm":{ name: "LaPerm",temperament:"Affectionate, Friendly, Gentle, Intelligent, Playful, Quiet",origin: "Thailand",image: "LaPerm.jpg"},
+                "maine coon":{name: "Maine Coon", temperament:"Adaptable, Intelligent, Loving, Gentle, Independent",origin: "United States",image: "MaineCoon.jpg"},
+                "malayan":{name: "Malayan", temperament: "Affectionate, Interactive, Playful, Social", origin : "United Kingdom", image: "Malayan.jpg"},
+                "manx":{name: "Manx", temperament:"Easy Going, Intelligent, Loyal, Playful, Social",origin: "Isle of Man" ,image: "Manx.jpg"},
+                "munchkin":{name: "Munchkin", temperament:"Agile, Easy Going, Intelligent, Playful", origin:"United States", image: " Munchkin.jpg"},
+                "nebelung":{name: "Nebelung",temperament:"Gentle, Quiet, Shy, Playful",origin: "United States", image: "Nebelung.jpg"},
+                "norwegian forest cat":{name: "Norwegian Forest Cat", temperament:"Sweet, Active, Intelligent, Social, Playful, Lively, Curious", origin: "Norway",image: " NorwegianForestCat.jpg"},
+                "ocicat":{name: "Ocicat",temperament: "Active, Agile, Curious, Demanding, Friendly, Gentle, Lively, Playful, Social",origin:"United States",image: " Ocicat.jpg"},
+                "oriental":{name: "Oriental", temperament: "Energetic, Affectionate, Intelligent, Social, Playful, Curious",origin: "United States",image: "Oriental.jpg"},
+                "persian":{name: "Persian", temperament:"Affectionate, loyal, Sedate, Quiet",origin: "Iran (Persia)",image: "Persian.jpg"},
+                "pixie-bob":{name: "Pixie-bob", temperament: "Affectionate, Social, Intelligent, Loyal", origin: "United States", image: "Pixie-bob.jpg"},
+                "ragamuffin":{name: "Ragamuffin", temperament: "Affectionate, Friendly, Gentle, Calm", origin: "United States", image: " Ragamuffin.jpg"},
+
+
+
+                "ragdoll":{name: "Ragdoll", temperament: "Affectionate, Friendly, Gentle, Quiet, Easygoing", origin: "United States",image: "Ragdoll.jpg"},
+                "russian blue":{name: "Russian Blue", temperament:"Active, Dependent, Easy Going, Gentle, Intelligent, Loyal, Playful, Quiet", origin: "Russia",image: " Russian Blue.jpg"},
+                "savannah":{name: "Savannah", temperament: "Curious, Social, Intelligent, Loyal, Outgoing, Adventurous, Affectionate", origin: "United States", image: " Savannah.jpg"},
+                "scottish fold":{name: "Scottish Fold", temperament: "Affectionate, Intelligent, Loyal, Playful, Social, Sweet, Loving", origin: "United Kingdom",image: " ScottishFold.jpg"},
+                "selkirk rex":{name: "Selkirk Rex", temperament: "Active, Affectionate, Dependent, Gentle, Patient, Playful, Quiet, Social",origin: "United States",image: " SelkirkRex.jpg"},
+                "siamese":{name: "Siamese", temperament:"Active, Agile, Clever, Sociable, Loving, Energetic",origin: "Thailand",image: " Siamese.jpg"},
+                "siberian":{name: "Siberian", temperament:"Curious, Intelligent, Loyal, Sweet, Agile, Playful, Affectionate", origin:"Russia",image: " Siberian.jpg"},
+                "singapura": {name: "Singapura", temperament:"Affectionate, Curious, Easy Going, Intelligent, Interactive, Lively, Loyal", origin: "Singapore", image: " Singapura.jpg"},
+                "snowshoe":{name: "Snowshoe", temperament:"Affectionate, Social, Intelligent, Sweet-tempered", origin:"United States,", image: " Snowshoe.jpg"},
+                "somali":{name: "Somali", temperament:"Mischievous, Tenacious, Intelligent, Affectionate, Gentle, Interactive, Loyal",origin:"Somalia",image: " Somali.jpg"},
+                "sphynx":{name: "Sphynx", temperament:"Loyal, Inquisitive, Friendly, Quiet, Gentle", origin: "Canada", image: " Sphynx.jpg"},
+                "tonkinese": {name: "Tonkinese",temperament:"Curious, Intelligent, Social, Lively, Outgoing, Playful, Affectionate",origin:"Canada",image: " Tonkinese.jpg"},
+                "toyger":{name: "toyger", temperament:"Playful, Social, Intelligent",origin:"United States",image: " Toyger.jpg"},
+                "turkish angora": {name: "Turkish Angora",temperament: "Affectionate, Agile, Clever, Gentle, Intelligent, Playful, Social",origin:"Turkey",image: " Turkish Angora.jpg"},
+                "turkish van": {name: "Turkish Van", temperament:"Agile, Intelligent, Loyal, Playful, Energetic",origin:"Turkey",image: " TurkishVan.jpg"},
+                "york chocolate": {name:"York Chocolate",temperament:"Playful, Social, Intelligent, Curious, Friendly",origin:"United States",image:"YorkChocolate.jpg"}
+            };
+
+             // Normaliza as chaves para comparação sem espaços extras
+             const normalizedKeys = Object.keys(catData).reduce((acc, key) => {
+                acc[key.replace(/\s+/g, " ")] = key;
+                return acc;
+            }, {});
+
+            if (!searchValue) {
+                resultDiv.innerHTML = "<p style='color:red;'>Digite o nome de uma raça.</p>";
+                return;
+            }
+
+            if (catData[searchValue]) {
+                resultDiv.innerHTML = `
+                    <img src="${catData[searchValue].image}" alt="${catData[searchValue].name}" onerror="this.src='imagens/placeholder.jpg'">
+                    <p><strong>Name: </strong>${catData[searchValue].name}</p>
+                    <p><strong>Origem:</strong> ${catData[searchValue].origin}</p>
+                    <p><strong>Temperament:</strong> ${catData[searchValue].temperament}</p>
+                   
+                `;
+            } else {
+                resultDiv.innerHTML = "<p style='color:red;'>Raça não encontrada.</p>";
+            }
+        }
+    </script>
+</body>
+</html>
